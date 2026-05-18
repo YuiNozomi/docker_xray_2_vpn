@@ -1,0 +1,45 @@
+{
+  "log": {
+    "access": "/var/log/xray/access.log",
+    "error": "/var/log/xray/error.log",
+    "loglevel": "warning"
+  },
+  "inbounds": [
+    {
+      "port": 10086,
+      "listen": "0.0.0.0",
+      "protocol": "vless",
+      "settings": {
+        "clients": [
+          {
+            "id": "9db5d1b8-8463-4e62-8f1f-f065a1b456d3",
+            "alterId": 0,
+            "email": "user1@xrayvpn"
+          },
+          {
+            "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+            "alterId": 0,
+            "email": "user2@xrayvpn"
+          },
+          {
+            "id": "12345678-1234-1234-1234-123456789012",
+            "alterId": 0,
+            "email": "user3@xrayvpn"
+          }
+        ]
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/ray"
+        }
+      }
+    }
+  ],
+  "outbounds": [
+    {
+      "protocol": "freedom",
+      "tag": "direct"
+    }
+  ]
+}

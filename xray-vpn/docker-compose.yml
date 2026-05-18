@@ -1,0 +1,21 @@
+services:
+  xray:
+    image: teddysun/xray:latest
+    container_name: xray-vpn
+    restart: always
+    ports:
+      - "10086:10086"
+    volumes:
+      - ./config/config.json:/etc/xray/config.json:ro
+      - ./certs:/etc/xray/certs:ro
+      - ./logs:/var/log/xray
+    environment:
+      - TZ=Asia/Shanghai
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - xray-net
+
+networks:
+  xray-net:
+    driver: bridge
