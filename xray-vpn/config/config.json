@@ -4,6 +4,14 @@
     "error": "/var/log/xray/error.log",
     "loglevel": "warning"
   },
+  "dns": {
+    "servers": [
+      "1.1.1.1",
+      "8.8.8.8",
+      "114.114.114.114",
+      "223.5.5.5"
+    ]
+  },
   "inbounds": [
     {
       "port": 10086,
@@ -28,13 +36,69 @@
           }
         ],
         "decryption": "none"
+      },
+      "streamSettings": {
+        "network": "ws",
+        "wsSettings": {
+          "path": "/ray"
+        }
+      },
+      "sniffing": {
+        "enabled": true,
+        "destOverride": ["http", "tls"]
       }
     }
   ],
   "outbounds": [
     {
       "protocol": "freedom",
-      "tag": "direct"
+      "tag": "direct",
+      "settings": {
+        "domainStrategy": "UseIP",
+        "redirect": ""
+      }
+    },
+    {
+      "protocol": "blackhole",
+      "tag": "blocked",
+      "settings": {
+        "response": {
+          "type": "http"
+        }
+      }
     }
-  ]
+  ],
+  "routing": {
+    "domainStrategy": "IPIfNonMatch",
+    "rules": [
+      {
+        "type": "field",
+        "outboundTag": "blocked",
+        "ip": [
+          "geoip:private"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "domain": [
+          "geosite:cn",
+          "geosite:category-games@cn"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "ip": [
+          "geoip:cn",
+          "geoip:private"
+        ]
+      },
+      {
+        "type": "field",
+        "outboundTag": "direct",
+        "network": "tcp,udp"
+      }
+    ]
+  }
 }
